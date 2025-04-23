@@ -1,4 +1,7 @@
 #pragma once
+#include <iostream>
+
+using namespace std;
 
 template <typename T>
 class Node
@@ -11,7 +14,7 @@ public:
 	Node(T data)
 	{
 		this->data = data;
-		this->prev = this->next = null;
+		this->prev = this->next = NULL;
 	}
 };
 
@@ -24,32 +27,42 @@ private:
 public:
 	LinkedList()
 	{
-		this->head = this->tail = null;
+		this->head = this->tail = NULL;
 	}
-	Node* pushFront(T data)
+
+	Node<T>* getHead() const
+	{
+		return head;
+	}
+
+	Node<T>* getTail() const
+	{
+		return tail;
+	}
+	Node<T>* pushFront(T data)
 	{
 		Node<T>* res = new Node<T>(data);
 		res->next = head;
-		if (head != null)
+		if (head != NULL)
 		{
 			head->prev = res;
 		}
-		if (tail == null)
+		if (tail == NULL)
 		{
 			tail = res;
 		}
 		head = res;
 		return res;
 	}
-	Node* pushBack(T data)
+	Node<T>* pushBack(T data)
 	{
-		Node<T> res = new Node<T>(data);
+		Node<T>* res = new Node<T>(data);
 		res->prev = tail;
-		if (tail != null)
+		if (tail != NULL)
 		{
 			tail->next = res;
 		}
-		if (head == null)
+		if (head == NULL)
 		{
 			head = res;
 		}
@@ -58,68 +71,68 @@ public:
 	}
 	void popFront()
 	{
-		if (head == null)
+		if (head == NULL)
 		{
 			return;
 		}
 		Node<T>* res = head->next;
-		if (res != null)
+		if (res != NULL)
 		{
-			res->prev = null;
+			res->prev = NULL;
 		}
 		else
 		{
-			tail = null;
+			tail = NULL;
 		}
 		delete head;
 		head = res;
 	}
 	void popBack()
 	{
-		if (tail == null)
+		if (tail == NULL)
 		{
 			return;
 		}
 		Node<T> res = tail->prev;
-		if (res != null)
+		if (res != NULL)
 		{
-			res->next = null;
+			res->next = NULL;
 		}
 		else
 		{
-			head = null;
+			head = NULL;
 		}
 		delete tail;
 		tail = res;
 	}
-	Node* getAt(size_t i)
+	Node<T>* getAt(size_t i)
 	{
 		Node* res = head;
 		size_t n = 0;
 		while (n != i)
 		{
-			if (res == null)
+			if (res == NULL)
 			{
 				return res;
 			}
 			res = res->next;
-			n++
+			n++;
 		}
 		return res;
 	}
-	Node* operator[] (size_t i)
+	Node<T>* operator[] (size_t i)
 	{
 		return getAt(i);
 	}
-	Node* insert(size_t i, T data)
+	Node<T>* insert(size_t i, T data)
 	{
 		Node<T> right = getAt(i);
-		if (right == null)
+		if (right == NULL)
 		{
 			return pushBack(data);
 		}
 		Node<T>* left = right->prev;
-		if (left == null)
+		if (left == NULL)
 		{
 			return pushFront(data);
 		}
@@ -133,16 +146,16 @@ public:
 	void erase(size_t i)
 	{
 		Node<T>* res = getAt(i);
-		if (res == null)
+		if (res == NULL)
 		{
 			return;
 		}
-		if (res->prev == null)
+		if (res->prev == NULL)
 		{
 			popFront();
 			return;
 		}
-		if (res->next == null)
+		if (res->next == NULL)
 		{
 			popBack();
 			return;
@@ -155,9 +168,27 @@ public:
 	}
 	~LinkedList()
 	{
-		while (head != null)
+		while (head != NULL)
 		{
 			popFront();
 		}
 	}
+	void FrontOut() const
+	{
+		for (Node<T>* ptr = head; ptr != NULL; ptr = ptr->next)
+		{
+			cout << ptr->data << " ";
+		}
+		cout << endl;
+	}
+	void RevOut() const
+	{
+		for (Node<T>* ptr = tail; ptr != NULL; ptr = ptr->prev)
+		{
+			cout << ptr->data << " ";
+		}
+		cout << endl;
+	}
 };
+
+void test();
