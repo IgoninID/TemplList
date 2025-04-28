@@ -10,12 +10,11 @@ int main()
     list.pushBack(2);
     list.pushBack(3);
     list.pushBack(4);
+    list.insert(3, 6);
     list.FrontOut();
     list.RevOut();
-    for (Node<int>* ptr = list.getHead(); ptr != NULL; ptr = ptr->next)
-        cout << ptr->data << " ";
-    cout << endl;
-    for (Node<int>* ptr = list.getTail(); ptr != NULL; ptr = ptr->prev)
-        cout << ptr->data << " ";
+    LinkedList<int> list2 = list;
+    list2.FrontOut();
+    list.FrontOut();
     cout << endl;
 }

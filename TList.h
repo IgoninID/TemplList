@@ -1,16 +1,25 @@
 #pragma once
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
+/// <summary>
+/// Шаблонный класс узел списка
+/// </summary>
+/// <typeparam name="T - тип элементов списка"></typeparam>
 template <typename T>
 class Node
 {
 public: 
-	T data;
-	Node* prev;
-	Node* next;
+	T data; // элемент списка
+	Node* prev; // предыдущий узел
+	Node* next; // следующий узел
 public:
+	/// <summary>
+	/// Конструктор узла списка
+	/// </summary>
+	/// <param name="data - элемент списка"></param>
 	Node(T data)
 	{
 		this->data = data;
@@ -18,27 +27,99 @@ public:
 	}
 };
 
+/// <summary>
+/// Шаблонный класс двусвязный список
+/// </summary>
+/// <typeparam name="T - тип элементов списка"></typeparam>
 template <typename T>
 class LinkedList
 {
 private:
-	Node<T>* head;
-	Node<T>* tail;
+	Node<T>* head; // первый узел списка
+	Node<T>* tail; // последний узел списка
+	size_t Size; // размер списка
 public:
+	/// <summary>
+	/// Коструктор по умолчанию (пустой список с 0 размером)
+	/// </summary>
 	LinkedList()
 	{
 		this->head = this->tail = NULL;
+		Size = 0;
 	}
 
-	Node<T>* getHead() const
+	/// <summary>
+	/// Конструктор копирования
+	/// </summary>
+	/// <param name="lst - копируемый список"></param>
+	LinkedList(const LinkedList<T>& lst)
 	{
-		return head;
+		Node<T>* curr = lst.head;
+		while (curr)
+		{
+			pushBack(curr->data);
+			curr = curr->next;
+		}
+		Size = lst.getSize();
 	}
 
-	Node<T>* getTail() const
+	/// <summary>
+	/// Конструктор перемещения
+	/// </summary>
+	/// <param name="lst - перемещаемый список"></param>
+	LinkedList(LinkedList<T>&& lst) noexcept : head(lst.head), tail(lst.tail), Size(lst.Size)
 	{
-		return tail;
+		lst.head = nullptr;
+		lst.tail = nullptr;
+		lst.Size = 0;
 	}
+
+	/// <summary>
+	/// Оператор копирования
+	/// </summary>
+	/// <param name="lst - копируемый список"></param>
+	/// <returns>
+	/// Ссылка на список
+	/// </returns>
+	LinkedList<T>& operator =(const LinkedList<T>& lst)
+	{
+		if (this != &lst)
+			return LinkedList<T>(lst);
+		return *this;
+	}
+
+	/// <summary>
+	/// Оператор перемещения
+	/// </summary>
+	/// <param name="lst - перемещаемый список"></param>
+	/// <returns>
+	/// Ссылка на список
+	/// </returns>
+	LinkedList<T>& operator =(LinkedList<T>&& lst)
+	{
+		if (this != &lst)
+			return LinkedList<T>(lst);
+		return *this;
+	}
+
+	/// <summary>
+	/// Получение размера списка
+	/// </summary>
+	/// <returns>
+	/// Размер списка
+	/// </returns>
+	size_t getSize() const
+	{
+		return Size;
+	}
+
+	/// <summary>
+	/// Вставка элемента в начало списка
+	/// </summary>
+	/// <param name="data - элемент"></param>
+	/// <returns>
+	/// Указатель на узел с элементом в списке
+	/// </returns>
 	Node<T>* pushFront(T data)
 	{
 		Node<T>* res = new Node<T>(data);
@@ -52,8 +133,17 @@ public:
 			tail = res;
 		}
 		head = res;
+		Size++;
 		return res;
 	}
+
+	/// <summary>
+	/// Вставка в конец списка
+	/// </summary>
+	/// <param name="data - элемент"></param>
+	/// <returns>
+	/// Указатель на узел с элементом в списке
+	/// <returns>
 	Node<T>* pushBack(T data)
 	{
 		Node<T>* res = new Node<T>(data);
@@ -67,8 +157,13 @@ public:
 			head = res;
 		}
 		tail = res;
+		Size++;
 		return res;
 	}
+
+	/// <summary>
+	/// Удаление элемента из начала списка
+	/// </summary>
 	void popFront()
 	{
 		if (head == NULL)
@@ -86,14 +181,19 @@ public:
 		}
 		delete head;
 		head = res;
+		Size--;
 	}
+
+	/// <summary>
+	/// Удаление элемента из конца списка
+	/// </summary>
 	void popBack()
 	{
 		if (tail == NULL)
 		{
 			return;
 		}
-		Node<T> res = tail->prev;
+		Node<T>* res = tail->prev;
 		if (res != NULL)
 		{
 			res->next = NULL;
@@ -104,10 +204,19 @@ public:
 		}
 		delete tail;
 		tail = res;
+		Size--;
 	}
+
+	/// <summary>
+	/// Получение узла списка
+	/// </summary>
+	/// <param name="i - индекс узла списка"></param>
+	/// <returns>
+	/// Узел списка
+	/// </returns>
 	Node<T>* getAt(size_t i)
 	{
-		Node* res = head;
+		Node<T>* res = head;
 		size_t n = 0;
 		while (n != i)
 		{
@@ -120,13 +229,45 @@ public:
 		}
 		return res;
 	}
-	Node<T>* operator[] (size_t i)
+
+	/// <summary>
+	/// Получение элемента в узле списка
+	/// </summary>
+	/// <param name="i - индекс узла списка"></param>
+	/// <returns>
+	/// Элемент узла списка
+	/// </returns>
+	T& At(size_t i)
 	{
-		return getAt(i);
+		Node<T>* res = getAt(i);
+		if (res == NULL)
+			throw out_of_range("За пределами списка");
+		return res->data;
 	}
+
+	/// <summary>
+	/// Перегрузка оператора [] (получение элемента узла списка)
+	/// </summary>
+	/// <param name="i - индекс элемента узла списка"></param>
+	/// <returns>
+	/// Элемент узла списка
+	/// </returns>
+	T& operator[] (size_t i)
+	{
+		return At(i);
+	}
+
+	/// <summary>
+	/// Вставка элемента по индексу
+	/// </summary>
+	/// <param name="i - индекс узла списка"></param>
+	/// <param name="data - элемент"></param>
+	/// <returns>
+	/// Указатель на узел с элементом в списке
+	/// </returns>
 	Node<T>* insert(size_t i, T data)
 	{
-		Node<T> right = getAt(i);
+		Node<T>* right = getAt(i);
 		if (right == NULL)
 		{
 			return pushBack(data);
@@ -141,8 +282,14 @@ public:
 		res->next = right;
 		left->next = res;
 		right->prev = res;
+		Size++;
 		return res;
 	}
+
+	/// <summary>
+	/// Удаление узла списка по индексу
+	/// </summary>
+	/// <param name="i"></param>
 	void erase(size_t i)
 	{
 		Node<T>* res = getAt(i);
@@ -164,8 +311,29 @@ public:
 		Node<T>* right = res->next;
 		left->next = right;
 		right->prev = left;
+		Size--;
 		delete res;
 	}
+
+	/// <summary>
+	/// Очистка списка
+	/// </summary>
+	void clear()
+	{
+		Node<T>* curr = head;
+		while (head)
+		{
+			Node<T>* next = curr->next;
+			delete curr;
+			curr = next;
+		}
+		head = tail = NULL;
+		Size = 0;
+	}
+
+	/// <summary>
+	/// Деструктор списка
+	/// </summary>
 	~LinkedList()
 	{
 		while (head != NULL)
@@ -173,6 +341,10 @@ public:
 			popFront();
 		}
 	}
+
+	/// <summary>
+	/// Вывод списка с начала
+	/// </summary>
 	void FrontOut() const
 	{
 		for (Node<T>* ptr = head; ptr != NULL; ptr = ptr->next)
@@ -181,6 +353,10 @@ public:
 		}
 		cout << endl;
 	}
+
+	/// <summary>
+	/// Вывод списка с конца
+	/// </summary>
 	void RevOut() const
 	{
 		for (Node<T>* ptr = tail; ptr != NULL; ptr = ptr->prev)
@@ -191,4 +367,7 @@ public:
 	}
 };
 
+/// <summary>
+/// Тесты методов двусвязного списка
+/// </summary>
 void test();
