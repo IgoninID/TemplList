@@ -289,7 +289,7 @@ public:
 	/// <summary>
 	/// Удаление узла списка по индексу
 	/// </summary>
-	/// <param name="i"></param>
+	/// <param name="i - индекс узла списка"></param>
 	void erase(size_t i)
 	{
 		Node<T>* res = getAt(i);
@@ -321,7 +321,7 @@ public:
 	void clear()
 	{
 		Node<T>* curr = head;
-		while (head)
+		while (curr)
 		{
 			Node<T>* next = curr->next;
 			delete curr;
