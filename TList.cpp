@@ -1,3 +1,5 @@
+// Автор: Игонин В.Ю.
+
 #include <cassert>
 #include "TList.h"
 

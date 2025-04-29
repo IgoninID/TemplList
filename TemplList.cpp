@@ -1,4 +1,6 @@
-﻿#include "TList.h"
+﻿// Автор: Игонин В.Ю.
+
+#include "TList.h"
 
 using namespace std;
 

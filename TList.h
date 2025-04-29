@@ -1,3 +1,5 @@
+// Автор: Игонин В.Ю.
+
 #pragma once
 #include <iostream>
 #include <stdexcept>
@@ -5,7 +7,7 @@
 using namespace std;
 
 /// <summary>
-/// Шаблонный класс узел списка
+/// Шаблонный класс узел двусвязного списка
 /// </summary>
 /// <typeparam name="T - тип элементов списка"></typeparam>
 template <typename T>
@@ -75,7 +77,7 @@ public:
 	}
 
 	/// <summary>
-	/// Оператор копирования
+	/// Оператор присваивания копированием
 	/// </summary>
 	/// <param name="lst - копируемый список"></param>
 	/// <returns>
@@ -89,7 +91,7 @@ public:
 	}
 
 	/// <summary>
-	/// Оператор перемещения
+	/// Оператор присваивания перемещением
 	/// </summary>
 	/// <param name="lst - перемещаемый список"></param>
 	/// <returns>
