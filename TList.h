@@ -3,6 +3,7 @@
 #pragma once
 #include <iostream>
 #include <stdexcept>
+#include "../InterfIter/AbstrIter.h"
 
 using namespace std;
 
@@ -41,6 +42,48 @@ private:
 	Node<T>* tail; // последний узел списка
 	size_t Size; // размер списка
 public:
+
+	class Iterator : public AbstrIter<T>
+	{
+		Node<T>* curr;
+	public:
+		Iterator(Node<T>* node = nullptr) : curr(node) {}
+
+		Iterator& operator++() override
+		{
+			if (curr)
+			{
+				curr = curr->next;
+			}
+			return *this;
+		}
+
+		T& operator *() const override
+		{
+			if (!curr)
+			{
+				throw out_of_range("Элемент не существует");
+			}
+			return curr->data;
+		}
+
+		bool operator !=(const AbstrIter<T>& other) const override
+		{
+			const Iterator* it = dynamic_cast<const Iterator*>(&other);
+			return !it || this->curr != it->curr;
+		}
+	};
+
+	Iterator begin() const
+	{
+		return Iterator(head);
+	}
+
+	Iterator end() const
+	{
+		return Iterator(nullptr);
+	}
+
 	/// <summary>
 	/// Коструктор по умолчанию (пустой список с 0 размером)
 	/// </summary>

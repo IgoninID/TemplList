@@ -19,4 +19,13 @@ int main()
     list2.FrontOut();
     list.FrontOut();
     cout << endl;
+    for (auto t : list)
+    {
+        cout << t << " ";
+    }
+    cout << endl;
+    for (auto it = list.begin(); it != list.end(); ++it)
+    {
+        cout << *it << " ";
+    }
 }
