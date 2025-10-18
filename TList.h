@@ -43,12 +43,24 @@ private:
 	size_t Size; // размер списка
 public:
 
+	/// <summary>
+	/// Итератор для двухсвязного списка
+	/// </summary>
 	class Iterator : public AbstrIter<T>
 	{
-		Node<T>* curr;
+		Node<T>* curr; // указатель на текущий узел, на который указывает итератор
 	public:
+
+		/// <summary>
+		/// Конструктор итератора
+		/// </summary>
+		/// <param name="node">Указатель на узел с которого начинается итерация</param>
 		Iterator(Node<T>* node = nullptr) : curr(node) {}
 
+		/// <summary>
+		/// Оператор префиксного инкремента
+		/// </summary>
+		/// <returns>Ссылка на итератор</returns>
 		Iterator& operator++() override
 		{
 			if (curr)
@@ -58,6 +70,11 @@ public:
 			return *this;
 		}
 
+		/// <summary>
+		/// Оператор разыименования
+		/// </summary>
+		/// <exception cref = "out_of_range Выбрасывается, итератор указывает на несущ элемент или конец списка"></exception>
+		/// <returns>Ссылка на данные текущего узла списка</returns>
 		T& operator *() const override
 		{
 			if (!curr)
@@ -67,6 +84,11 @@ public:
 			return curr->data;
 		}
 
+		/// <summary>
+		/// Оператор сравнения на неравенство
+		/// </summary>
+		/// <param name="other">Другой итератор</param>
+		/// <returns>1 - указывают на разные узлы, 0 - указывают на один и тот же узел</returns>
 		bool operator !=(const AbstrIter<T>& other) const override
 		{
 			const Iterator* it = dynamic_cast<const Iterator*>(&other);
@@ -74,11 +96,19 @@ public:
 		}
 	};
 
+	/// <summary>
+	/// Вызов конструктора итератора с начальным элементом списка
+	/// </summary>
+	/// <returns>Итератор указывающий на первый элемент списка</returns>
 	Iterator begin() const
 	{
 		return Iterator(head);
 	}
 
+	/// <summary>
+	/// Вызов конструктора итератора с nullptr
+	/// </summary>
+	/// <returns>Итератор указывающий на элемент после последнего</returns>
 	Iterator end() const
 	{
 		return Iterator(nullptr);
