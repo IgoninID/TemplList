@@ -1,6 +1,7 @@
 // јвтор: »гонин ¬.ё.
 
 #include <cassert>
+#include <vector>
 #include "TList.h"
 
 /// <summary>
@@ -133,4 +134,346 @@ void test()
 	assert(voidlst.getSize() == 0);
 	lstfpu.clear(); // очистка списка
 	assert(lstfpu.getSize() == 0);
+}
+
+void test_inc()
+{
+	// пустой список
+	{
+		LinkedList<int> lst;
+		auto it = lst.begin();
+		auto e = lst.end();
+		assert(!(it != e));
+		++it;
+		assert(!(it != e));
+	}
+
+	// один элемент
+	{
+		LinkedList<int> lst;
+		lst.pushBack(5);
+		auto it = lst.begin();
+		auto e = lst.end();
+		assert(*it == 5);
+		++it;
+		assert(!(it != e));
+	}
+
+	// 3 элемента
+	{
+		LinkedList<int> lst;
+		lst.pushBack(5);
+		lst.pushBack(4);
+		lst.pushBack(3);
+		auto it = lst.begin();
+		auto e = lst.end();
+		vector<int> see;
+		for (auto it : lst)
+		{
+			see.push_back(it);
+		}
+		assert((see == vector<int>{5, 4, 3}));
+	}
+
+	// много элементов
+	{
+		LinkedList<int> lst;
+		for (int i = 0; i < 100; i++)
+		{
+			lst.pushBack(i);
+		}
+		size_t count = 0;
+		for (auto it = lst.begin(); it != lst.end(); ++it)
+		{
+			assert(*it == count);
+			++count;
+		}
+		assert(count == 100);
+	}
+
+	// много ++ после end
+	{
+		LinkedList<int> lst;
+		lst.pushBack(5);
+		lst.pushBack(4);
+		auto it = lst.begin();
+		auto e = lst.end();
+		for (int k = 0; k < 10; k++)
+		{
+			++it;
+		}
+		assert(!(it != e));
+	}
+
+}
+
+void test_def()
+{
+	// пустой список
+	{
+		LinkedList<int> lst;
+		try 
+		{
+			int x = *lst.begin();
+			assert(false);
+		}
+		catch (out_of_range&)
+		{
+
+		}
+	}
+
+	// 1 элемент значение мен€етс€ через итератор
+	{
+		LinkedList<int> lst;
+		lst.pushBack(5);
+		auto it = lst.begin();
+		assert(*it == 5);
+		*it = 100;
+		assert(lst[0] == 100);
+	}
+
+	// второй элемент можно получить и изменить
+	{
+		LinkedList<int> lst;
+		lst.pushBack(5);
+		lst.pushBack(4);
+		lst.pushBack(3);
+		auto it = lst.begin();
+		++it;
+		assert(*it == 4);
+		*it = 40;
+		assert(lst[1] == 40);
+	}
+
+	// разыменование end
+	{
+		LinkedList<int> lst;
+		lst.pushBack(5);
+		auto e = lst.end();
+		try
+		{
+			int x = *e;
+			assert(false);
+		}
+		catch (out_of_range&)
+		{
+
+		}
+	}
+
+	// два итератора на один и тот же узел
+	{
+		LinkedList<int> lst;
+		lst.pushBack(1);
+		lst.pushBack(2);
+		auto it = lst.begin();
+		auto it1 = lst.begin();
+		assert(*it == *it1);
+		*it = 5;
+		assert(*it1 == 5);
+		assert(lst[0] == 5);
+	}
+
+}
+
+void test_comp()
+{
+	// пустой список
+	{
+		LinkedList<int> lst;
+		assert(!(lst.begin() != lst.end()));
+	}
+
+	// один элемент
+	{
+		LinkedList<int> lst;
+		lst.pushBack(1);
+		auto a = lst.begin();
+		auto b = a;
+		assert(!(a != b));
+		assert(a != lst.end());
+	}
+
+	// итераторы на разные позиции
+	{
+		LinkedList<int> lst;
+		for (int i = 0; i < 4; i++)
+		{
+			lst.pushBack(i);
+		}
+		auto it1 = lst.begin();
+		++it1;
+		auto it2 = lst.begin();
+		++it2;
+		++it2;
+		assert(it1 != it2);
+	}
+
+	// итераторы на разные списки
+	{
+		LinkedList<int> a, b;
+		a.pushBack(1);
+		b.pushBack(1);
+		auto ia = a.begin();
+		auto ib = b.begin();
+		assert(ia != ib);
+	}
+
+	// достижение конца списка
+	{
+		LinkedList<int> lst;
+		lst.pushBack(1);
+		auto it = lst.begin();
+		++it;
+		assert(!(it != lst.end()));
+	}
+
+}
+
+void test_iter()
+{
+	// пустой список
+	{
+		LinkedList<int> lst;
+		vector<int> out;
+		for (auto it : lst)
+		{
+			out.push_back(it);
+		}
+		assert(out.empty());
+	}
+
+	// один элемент
+	{
+		LinkedList<int> lst;
+		lst.pushBack(1);
+		vector<int> out;
+		for (auto it : lst)
+		{
+			out.push_back(it);
+		}
+		assert(out.size() == 1 && out[0] == 1);
+	}
+	
+	// нечетное колво элементов
+	{
+		LinkedList<int> lst;
+		for (int i = 0; i < 3; i++)
+		{
+			lst.pushBack(i);
+		}
+		vector<int> out;
+		for (auto it : lst)
+		{
+			out.push_back(it);
+		}
+		assert(out == vector<int>({0, 1, 2}));
+	}
+
+	// четное количество элементов
+	{
+		LinkedList<int> lst;
+		for (int i = 0; i < 6; i++)
+		{
+			lst.pushBack(i);
+		}
+		vector<int> out;
+		for (auto it = lst.begin(); it != lst.end(); ++it)
+		{
+			out.push_back(*it);
+		}
+		assert(out == vector<int>({ 0, 1, 2, 3, 4, 5 }));
+	}
+
+	// большой список
+	{
+		LinkedList<int> lst;
+		int N = 100;
+		for (int i = 0; i < N; i++)
+		{
+			lst.pushBack(i*4);
+		}
+		int cnt = 0;
+		int prev = -1;
+		for (auto it = lst.begin(); it != lst.end(); ++it)
+		{
+			++cnt;
+			int v = *it;
+			assert(v % 4 == 0);
+			if (prev != -1)
+			{
+				assert(v > prev);
+			}
+			prev = v;
+		}
+		assert(cnt == N);
+	}
+
+}
+
+void test_case()
+{
+	// несколько ++ подр€д на одном итераторе
+	{
+		LinkedList<int> lst;
+		lst.pushBack(0);
+		lst.pushBack(1);
+		lst.pushBack(2);
+		auto it = lst.begin();
+		++it;
+		++it;
+		++it;
+		++it;
+		++it;
+		++it;
+		++it;
+		++it;
+		assert(!(it != lst.end()));
+	}
+
+	// использование итератора после удалени€ других узлов
+	{
+		LinkedList<int> lst;
+		for (int i = 0; i < 5; i++)
+		{
+			lst.pushBack(i);
+		}
+		auto it = lst.begin();
+		++it;
+		lst.popFront();
+		assert(*it == 1);
+	}
+
+	// копирование итератора и преобразование данных в одном из них
+	{
+		LinkedList<int> lst;
+		for (int i = 0; i < 5; i++)
+		{
+			lst.pushBack(i);
+		}
+		auto it = lst.begin();
+		auto it2 = it;
+		++it;
+		assert(*it2 == 0);
+		assert(*it == 1);
+	}
+
+	// вставка в середину списка
+	{
+		LinkedList<int> lst;
+		lst.pushBack(0);
+		lst.pushBack(1);
+		auto it = lst.begin();
+		++it;
+		lst.insert(1, 2);
+		assert(*it == 1);
+		vector<int> out;
+		for (auto ita : lst)
+		{
+			out.push_back(ita);
+		}
+		assert(out == vector<int>({ 0, 2, 1 }));
+	}
+
 }

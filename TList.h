@@ -446,3 +446,13 @@ public:
 /// Тесты методов двусвязного списка
 /// </summary>
 void test();
+
+void test_inc();
+
+void test_def();
+
+void test_comp();
+
+void test_iter();
+
+void test_case();

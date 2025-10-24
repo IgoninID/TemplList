@@ -7,6 +7,11 @@ using namespace std;
 int main()
 {
     test();
+    test_inc();
+    test_def();
+    test_comp();
+    test_iter();
+    test_case();
     LinkedList<int> list;
     list.pushBack(1);
     list.pushBack(2);
